@@ -25,7 +25,7 @@ $ npm install
 For development purpose, please refer to "Developing Section" <br><br><br><br>
 # **DEVELOPMENT SECTION**
 
-## Step 1 - **Create ".env" Files**
+### Step 1 - **Create ".env" Files**
 
 Before start, please create two .env file :
 <br> <br>
@@ -43,7 +43,7 @@ create a **".env.production"** file and type the following inside:
 > DATABASE_URL=""
 
 <br><br><br>
-## Step 2 - **Data Seeding**
+### Step 2 - **Data Seeding**
 We have prepared sets of dummy data for development purpose.
 
 Please work on the folloing commands in terminal
@@ -59,7 +59,7 @@ $ npm run setup-dbs
 $ npm run seed
 ```
 <br><br><br>
-## Step 3 - **Check If Data Inserted (Optional)**
+### Step 3 - **Check If Data Inserted (Optional)**
 Please work on the folloing commands in terminal
 <br><br><br>
 1) Enter to PostgreSQL
