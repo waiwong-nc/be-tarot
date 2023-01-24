@@ -4,4 +4,6 @@ import Data from "../data";
 const runSeed = () => {
   return seed(Data);
 };
-  
+
+runSeed();
+

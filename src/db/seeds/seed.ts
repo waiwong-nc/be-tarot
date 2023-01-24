@@ -2,10 +2,10 @@
 import format from "pg-format";
 import db from "../connection";
 
-
 const seed = (data: TextDataType) => {
 
   const { usersData, entriesData } = data;
+
   const dropUsersTablePromises = db.query(
     "DROP TABLE IF EXISTS users CASCADE;"
   );
@@ -72,6 +72,7 @@ const seed = (data: TextDataType) => {
     })
     .catch((err) => {
       console.log(err, "<< Error in Seed");
+      db.end();
     });
 };
 
