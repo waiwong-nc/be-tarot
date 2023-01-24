@@ -80,10 +80,10 @@ $ \dt
 
 
            List of relations
- Schema |  Name   | Type  |    Owner    <br>
---------+---------+-------+-------------<br>
- public | entries | table | waishunwong<br>
- public | users   | table | waishunwong<br>
+ Schema |  Name   | Type  |    Owner    
+--------+---------+-------+-------------
+ public | entries | table | waishunwong
+ public | users   | table | waishunwong
 (2 rows)
 ````
 
