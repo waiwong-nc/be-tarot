@@ -30,7 +30,7 @@ For development purpose, please refer to "Developing Section" <br><br><br><br>
 Before start, please create two .env file :
 <br> <br>
 
-#### **1) <u>.env.development files**</u>
+#### **1) <u>.env.development**</u>
 create a **".env.development"** file and type the following inside:
 >PGDATABASE=tarot_test
 
