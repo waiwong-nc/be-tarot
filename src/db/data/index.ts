@@ -5,4 +5,4 @@ import users from "./users";
 export const usersData = users;
 export const entriesData = entries;
 
-export const Data = {users, entries}
+export default { usersData, entriesData };

@@ -1,14 +1,7 @@
 import seed from "./seed";
-import db from "../connection";
-// import {Data} from "../data";
-
-// console.log(users, "<< users")
-// console.log(entries, "<< entries");
-// console.log(Data)
-
+import Data from "../data";
 
 const runSeed = () => {
-    return seed()
-  };
+  return seed(Data);
+};
   
-  runSeed();
