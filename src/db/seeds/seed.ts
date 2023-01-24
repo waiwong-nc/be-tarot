@@ -75,12 +75,15 @@ const seed = () => {
           ]
         })
       );
-      db.query(insertEntriesQueryStr).then((result) => result.rows);
+      db.query(insertEntriesQueryStr).then((result) => result.rows)
+     
 
-    })
+    }) .then(() => db.end())
     .catch((err) => {
       console.log(err, "<< Error in Seed");
     });
 }
+
+
 
 export default seed;
