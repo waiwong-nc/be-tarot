@@ -1,6 +1,7 @@
 import Express from "express";
 import { NextFunction, Request, Response } from "express";
 import usersRouter from "./router/users";
+import entriesRouter from "./router/entries";
 
 const app = Express();
 const cors = require("cors");
@@ -14,7 +15,8 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
 });
 
 
-app.get("/api/users",usersRouter);
+app.use("/api/users",usersRouter);
+app.use("/api/entries", entriesRouter);
 
 
 

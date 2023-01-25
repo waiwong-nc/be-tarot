@@ -4,6 +4,6 @@ const route = Router();
 
 
 // GET /api/user
-route.get("/api/users", getUsers);
+route.get("/", getUsers);
 
 export default route;
