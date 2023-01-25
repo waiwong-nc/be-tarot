@@ -3,6 +3,8 @@ import { NextFunction, Request, Response } from "express";
 import usersRouter from "./router/users";
 import entriesRouter from "./router/entries";
 import entryByIdRouter from "./router/entryById"
+import { customerError, status404, status500 } from "./controllers/errors";
+
 
 const app = Express();
 const cors = require("cors");
@@ -21,6 +23,14 @@ app.use("/api/entries", entriesRouter);
 app.use("/api/entries/:entry_id", entryByIdRouter);
 
 
+// Only enable this router during development stage
+import errorTestRouter from "./router/errorTest";
+app.use("/api/error-test", errorTestRouter);
+// Only enable this router during development stage
+
 // Error Handling
+app.all("*", status404);
+app.use(customerError);
+app.use(status500);
 
 export default app;
