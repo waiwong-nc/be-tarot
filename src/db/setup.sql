@@ -1,5 +1,5 @@
 DROP DATABASE IF EXISTS tarot_test;
-DROP DATABASE IF EXISTS tarot;
+DROP DATABASE IF EXISTS tarot_development;
 
 CREATE DATABASE tarot_test;
-CREATE DATABASE tarot
+CREATE DATABASE tarot_development;

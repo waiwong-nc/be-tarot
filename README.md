@@ -27,16 +27,22 @@ For development purpose, please refer to "Developing Section" <br><br><br><br>
 
 ### Step 1 - **Create ".env" Files**
 
-Before start, please create two .env file :
+Before start, please create <u>**3**</u> .env file :
 <br> <br>
 
 #### **1) <u>.env.development**</u>
 create a **".env.development"** file and type the following inside:
+>PGDATABASE=tarot_development
+
+<br>
+
+#### **2) <u>.env.test**</u>
+create a **".env.test"** file and type the following inside:
 >PGDATABASE=tarot_test
 
 <br>
 
-#### <u>**2) .env.production**</u>
+#### <u>**3) .env.production**</u>
 create a **".env.production"** file and type the following inside:
 > PGDATABASE=tarot 
 
@@ -61,7 +67,7 @@ $ npm run seed
 <br><br><br>
 ### Step 3 - **Check If Data Inserted (Optional)**
 Please work on the folloing commands in terminal
-<br><br><br>
+<br><br>
 1) Enter to PostgreSQL
 ```
 $ psql

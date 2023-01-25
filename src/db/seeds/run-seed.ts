@@ -1,9 +1,9 @@
 import seed from "./seed";
-import Data from "../data";
+import data from "../data";
+import db from "../connection";
 
 const runSeed = () => {
-  return seed(Data);
-};
-
+  return seed(data).then(() => db.end())
+}
 runSeed();
 
