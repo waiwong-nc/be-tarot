@@ -6,4 +6,4 @@ export const usersData = users;
 export const entriesData = entries;
 
 
-export default { usersData, entriesData,  };
+export default { usersData, entriesData};

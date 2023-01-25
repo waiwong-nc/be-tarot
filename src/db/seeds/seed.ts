@@ -55,7 +55,8 @@ const seed = async(data: TextDataType) => {
           user_id,
           entry_body,
           JSON.stringify(tarot_card_id),
-          created_at, intention
+          created_at, 
+          intention
     ];}));
 
     await db.query(insertEntriesQueryStr);
