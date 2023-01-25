@@ -55,7 +55,7 @@ We have prepared sets of dummy data for development purpose.
 Please work on the folloing commands in terminal
 <br><br>
 
-1) create database ***"tarot_test"***
+1) create database ***"tarot_test"*** & ***"tarot_development"***
 ```
 $ npm run setup-dbs
 ```
@@ -75,7 +75,7 @@ $ psql
 
 2) Connect to database
 ```
-$ \c tarot_test
+$ \c tarot_development
 ```
 
 3) Show if tables ***'users'*** and ***'enteries'*** created
