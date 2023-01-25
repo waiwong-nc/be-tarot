@@ -2,7 +2,7 @@
 import format from "pg-format";
 import db from "../connection";
 
-const seed = async(data: TextDataType) => {
+const seed = async(data: SeedDataType) => {
 
 
 

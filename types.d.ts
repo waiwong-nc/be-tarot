@@ -12,7 +12,7 @@ type entriesDataType = {
   intention: string;
 };
 
-type TextDataType = {
+type SeedDataType = {
   usersData: userDataType[];
   entriesData: entriesDataType[];
 };

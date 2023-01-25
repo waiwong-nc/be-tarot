@@ -5,43 +5,42 @@ export default [
       "The greatest glory in living lies not in never falling, but in rising every time we fall.",
     created_at: new Date(1511354163389),
     tarot_card_id: [
-      {id: 2, isLight: true, readingStyle: 'Past'},
-      {id: 3, isLight: false, readingStyle: 'Present'},
-      {id: 33, isLight: true, readingStyle: 'Future'},
-
+      { id: 2, isLight: true, readingStyle: "Past" },
+      { id: 3, isLight: false, readingStyle: "Present" },
+      { id: 33, isLight: true, readingStyle: "Future" },
     ],
-    intention: "I hope to see my future"
+    intention: "I hope to see my future",
   },
   {
     user_id: 2,
     entry_body: "The way to get started is to quit talking and begin doing",
     created_at: new Date(1610964545410),
     tarot_card_id: [
-      {id: 4, isLight: true, readingStyle: 'Past'},
-      {id: 3, isLight: false, readingStyle: 'Present'},
-      {id: 23, isLight: false, readingStyle: 'Future'},
-
+      { id: 4, isLight: true, readingStyle: "Past" },
+      { id: 3, isLight: false, readingStyle: "Present" },
+      { id: 23, isLight: false, readingStyle: "Future" },
     ],
-    intention: "Nice"
+    intention: "Nice",
   },
   {
     user_id: 3,
     entry_body: "Test Body",
     created_at: new Date(1511354163388),
-    tarot_card_id: [{id: 2, isLight: true, readingStyle: 'None'}],
+    tarot_card_id: [{ id: 2, isLight: true, readingStyle: "None" }],
+    intention: "Nice",
   },
+
   {
     user_id: 1,
     entry_body: "Excellent. Ice Cream",
     created_at: new Date(1511354163389),
     tarot_card_id: [
-      {id: 1, isLight: true, readingStyle: 'Past'},
-      {id: 2, isLight: false, readingStyle: 'Present'},
-      {id: 26, isLight: true, readingStyle: 'Future'},
-
+      { id: 1, isLight: true, readingStyle: "Past" },
+      { id: 2, isLight: false, readingStyle: "Present" },
+      { id: 26, isLight: true, readingStyle: "Future" },
     ],
-    
-    intention: "Happy days"
+
+    intention: "Happy days",
   },
   {
     user_id: 1,

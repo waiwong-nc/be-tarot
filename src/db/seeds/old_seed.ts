@@ -2,7 +2,7 @@
 import format from "pg-format";
 import db from "../connection";
 
-const seed = (data: TextDataType) => {
+const seed = (data: SeedDataType) => {
 
   const { usersData, entriesData } = data;
 
