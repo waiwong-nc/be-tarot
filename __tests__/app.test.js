@@ -2,11 +2,13 @@ const request = require('supertest');
 const app = require("../dist/app").default;
 const db = require("../dist/db/connection").default;
 const testData = require("../dist/db/data");
-const seed = require("../dist/db/seeds/seed")
+const seed = require("../dist/db/seeds/seed");
+
+
 
 
 beforeEach(async () => {
-    await seed.default(testData);
+    await seed.default(testData)
 });
 
 afterAll((done) => {
@@ -83,3 +85,53 @@ describe('API',() => {
   }); // End of "GET /api/entries";
 
 }); // End of "API"
+
+
+describe("Error Handler", () => {
+  describe("404", () => {
+    test('404: Respond with "Not Found" if url path (GET Request) not match', () => {
+      return request(app)
+        .get("/api/helloworld")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Not Found");
+        });
+    }); // End of Error 404 (GET)
+
+    test('404: Respond with "Not Found" if url path (POST Request) not match', () => {
+      return request(app)
+        .post("/api/helloworld")
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Not Found");
+        });
+    }); // End of Error 404 (POST)
+  }); // End of dscribe(404)
+
+  describe("500", () => {
+    test('500: Respond with "Internal Server Error" if server throw error', () => {
+      return request(app)
+        .get("/api/error-test/triggerStatus500Error")
+        .expect(500)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Internal Server Error");
+        });
+    }); // End of Error 404 (GET)
+
+    test('22P02: Respond with "Bad Request" if database table not found', () => {
+      return request(app)
+        .get("/api/error-test/TableNotFound")
+        .expect(500)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Internal Server Error");
+        });
+    }); // End of dscribe(500)
+
+
+
+  }); // End of Error Handler
+});
