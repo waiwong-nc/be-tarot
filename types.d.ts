@@ -9,6 +9,7 @@ type entriesDataType = {
   entry_body: string;
   created_at: any;
   tarot_card_id: any[];
+  intention: string;
 };
 
 type TextDataType = {

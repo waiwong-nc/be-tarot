@@ -40,20 +40,22 @@ const seed = async(data: TextDataType) => {
         user_id INT NOT NULL REFERENCES users(user_id),
         entry_body VARCHAR,
         tarot_card_id VARCHAR,
-        created_at TIMESTAMP DEFAULT NOW()
+        created_at TIMESTAMP DEFAULT NOW(),
+        intention VARCHAR
+
     );`
   );
 
 
   const insertEntriesQueryStr = format(
-    "INSERT INTO entries (user_id, entry_body, tarot_card_id, created_at) VALUES %L RETURNING *;",
+    "INSERT INTO entries (user_id, entry_body, tarot_card_id, created_at, intention) VALUES %L RETURNING *;",
     entriesData.map(
-      ({ user_id, entry_body, tarot_card_id, created_at }) => {
+      ({ user_id, entry_body, tarot_card_id, created_at, intention }) => {
         return [
           user_id,
           entry_body,
           JSON.stringify(tarot_card_id),
-          created_at,
+          created_at, intention
     ];}));
 
     await db.query(insertEntriesQueryStr);
