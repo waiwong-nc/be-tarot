@@ -82,4 +82,34 @@ describe('API',() => {
     });
   }); // End of "GET /api/entries";
 
+  describe("GET /api/entries/:entry_id", () => {
+    // const isLoggin = { some process ... => set it to true }
+    // test(if authentication work ).expect(....)
+
+    test("200: Respond with a single entry object", () => {
+      return request(app)
+        .get("/api/entries/2")
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body, "body")
+          const { entries } = body;
+            console.log(entries, "entries")
+            expect(entries[0]).toEqual(
+              expect.objectContaining({
+                user_id: 2,
+                entry_body: "The way to get started is to quit talking and begin doing",
+                created_at: expect.any(String),
+                tarot_card_id:[
+                  { id: 4, isLight: true, readingStyle: "Past" },
+                  { id: 3, isLight: false, readingStyle: "Present" },
+                  { id: 23, isLight: false, readingStyle: "Future" },
+                ],
+  intention: "Nice",          
+    })
+            );
+         
+        });
+    });
+  }); // End of "GET /api/entries/:entry_id
+
 }); // End of "API"
