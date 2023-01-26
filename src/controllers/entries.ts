@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { selectAllEntries, selectEntryById } from "../models/entries";
+import { selectAllEntries, selectEntryById, insertEntry } from "../models/entries";
 
 //selectEntryById
 // GET /api/getEntries
@@ -28,3 +28,23 @@ selectEntryById(entry_id)
     next(err);
   });
 };
+
+// POST /api/postEntries - entries.ts
+export const postEntry = (req: Request, res: Response, next: NextFunction) => {
+  console.log(req, "req")
+  console.log(req.body, "req.body")
+  console.log("in controller")
+  
+    const entryBody = req.body
+    insertEntry(entryBody)
+      .then((entry) => {
+        console.log(entry, "entry")
+        console.log({entry}, "{entry}")
+        res.status(201).send({ entry });
+      })
+      .catch((err: any) => {
+        next(err);
+      });
+  };
+
+  //

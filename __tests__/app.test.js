@@ -164,3 +164,43 @@ describe("Error Handler", () => {
   }); // End of Error Handler
 });
 
+
+describe("POST /api/entries", () => {
+  // const isLoggin = { some process ... => set it to true }
+  // test(if authentication work ).expect(....)
+
+  test("200: Respond with a single entry object", () => {
+const newEntry = {
+entry_body: "Brand New Body!",
+tarot_card_id: [
+  { id: 4, isLight: true, readingStyle: "Test" },
+  { id: 3, isLight: false, readingStyle: "Test" },
+  { id: 23, isLight: false, readingStyle: "Test" },
+],
+intention: "Would love to test"
+}
+    return request(app)
+      .post("/api/entries/")
+      .send(newEntry)
+      .expect(201)
+      .then(({ body }) => {
+        console.log(body, "body")
+        const { entries } = body;
+          console.log(entries, "entries")
+          expect(entries[0]).toEqual(
+            expect.objectContaining({
+              user_id: expect.any(Number),
+              entry_body:  "Brand New Body!",
+              created_at: expect.any(String),
+              tarot_card_id: [
+                { id: 4, isLight: true, readingStyle: "Test" },
+                { id: 3, isLight: false, readingStyle: "Test" },
+                { id: 23, isLight: false, readingStyle: "Test" },
+              ],
+              intention: "Would love to test"       
+            })
+          );
+       
+      });
+  });
+}); // End of "GET /api/entries/:entry_id

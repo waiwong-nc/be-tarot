@@ -4,6 +4,7 @@ import usersRouter from "./router/users";
 import entriesRouter from "./router/entries";
 import entryByIdRouter from "./router/entryById"
 import { customerError, status404, status500 } from "./controllers/errors";
+import postEntryRouter from "./router/postEntry"
 
 
 const app = Express();
@@ -21,6 +22,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
 app.use("/api/users",usersRouter);
 app.use("/api/entries", entriesRouter);
 app.use("/api/entries/:entry_id", entryByIdRouter);
+app.use("/api/entries", postEntryRouter);
 
 
 // Only enable this router during development stage
