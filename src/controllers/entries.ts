@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import entries from "../db/data/entries";
 import { selectAllEntries, selectEntryById, insertEntry } from "../models/entries";
 
 //selectEntryById
@@ -16,8 +17,7 @@ export const getEntries = (req: Request, res: Response, next: NextFunction) => {
 // GET /api/getEntries
 export const getEntryById = (req: Request, res: Response, next: NextFunction) => {
   const { entry_id } = req.params;
-  console.log(entry_id, "entry_id in controller")
-  console.log("Hi from controllerr")
+
 
 selectEntryById(entry_id)
   .then((entries) => {
@@ -31,16 +31,17 @@ selectEntryById(entry_id)
 
 // POST /api/postEntries - entries.ts
 export const postEntry = (req: Request, res: Response, next: NextFunction) => {
-  console.log(req, "req")
   console.log(req.body, "req.body")
   console.log("in controller")
   
     const entryBody = req.body
     insertEntry(entryBody)
-      .then((entry) => {
-        console.log(entry, "entry")
-        console.log({entry}, "{entry}")
-        res.status(201).send({ entry });
+      .then((entries) => {
+        console.log(entries, "entries in controller")
+        console.log({entries}, "{entries in controller}")
+        const tarot_card_id= JSON.parse( entries.tarot_card_id)
+
+        res.status(201).send({entries: [{ ... entries,  tarot_card_id}]});
       })
       .catch((err: any) => {
         next(err);

@@ -2,14 +2,13 @@ import { NextFunction, Request, Response } from "express";
 import { tableNotFound } from "../models/error";
 
 export const status404 = (req:any, res: Response, next:NextFunction) => {
-    console.log("here status404");
     res.status(404).send({msg:"Not Found"});
 };
 
 
 export const customerError = (err:any, req: Request, res: Response, next: NextFunction) => {
-  console.log("here customerError");
-  console.log(err)
+  console.log(err, "err first")
+
   if (err.msg) {
       res.status(err.status).send({msg: err.msg});
   } else {
@@ -18,8 +17,8 @@ export const customerError = (err:any, req: Request, res: Response, next: NextFu
 };
 
 export const status500 = (err:any, req: Request, res: Response, next: NextFunction) => {
-    console.log("here status500");
-   
+  console.log(err, "err first second")
+
 //  Handle Error from psql
   if (err.code === "22P02") {
     res.status(400).send({ msg:"Bad Request"});
@@ -43,13 +42,11 @@ export const triggerServerError = (
     res: Response,
   next: NextFunction
 ) => {
-  console.log("here triggerServerError");
   tableNotFound()
     .then((users) => {
       res.status(200).send({ users: users });
     })
     .catch((err: any) => {
-      console.log(err, "<< in func");
       next(err);
     });
 };
