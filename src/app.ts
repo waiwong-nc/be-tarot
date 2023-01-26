@@ -6,6 +6,7 @@ import entryByIdRouter from "./router/entryById"
 import { customerError, status404, status500 } from "./controllers/errors";
 
 
+
 const app = Express();
 const cors = require("cors");
 app.use(Express.json());
@@ -21,6 +22,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
 app.use("/api/users",usersRouter);
 app.use("/api/entries", entriesRouter);
 app.use("/api/entries/:entry_id", entryByIdRouter);
+
 
 
 // Only enable this router during development stage
