@@ -11,6 +11,9 @@ const {
 } = require("../dist/models/auth");
 const bcrypt = require("bcryptjs");
 
+const { checkIfUserExist } = require("../dist/middlewares/is-auth");
+
+
 beforeEach(async () => {
   await seed.default(testData);
 });
@@ -344,3 +347,71 @@ describe("Authentication", () => {
     // test("401: Password format valid ", () => {});
   }); // End of Login
 }); // End of Testing Authentication
+
+
+
+describe.only("Middleware - is-Auth", () => {
+
+  describe("JWT Token Validation", () => {
+    test("GET/ api/users/ - show all if jwt valid (for admin use only)", () => {
+      const token = generateToken("john@tarotmail.com", (3).toString());
+      const headerConfig = {
+        Authorization: `Bearer ${token}`,
+      };
+      return request(app)
+        .get("/api/users")
+        .set(headerConfig)
+        .expect(200)
+        .then(({ body }) => {
+          const { users } = body;
+          expect(users).toHaveLength(6);
+          users.forEach((user) => {
+            expect(user).toEqual(
+              expect.objectContaining({
+                user_id: expect.any(Number),
+                user_name: expect.any(String),
+                email: expect.any(String),
+                password: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+
+    test("Return 401 and `No Token` if token is not attached ", () => {
+      const headerConfig = {  };
+      return request(app)
+        .get("/api/users")
+        .set(headerConfig)
+        .expect(401)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe('No Token')
+        });
+    });
+
+    test("Return 401 and `Invalid Token` if token is not valid ", () => {
+      const headerConfig = { Authorization: 'Bearer safsfadsfasfsdfanpm'};
+      return request(app)
+        .get("/api/users")
+        .set(headerConfig)
+        .expect(401)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Invalid Token");
+        });
+    });
+
+    test.only("Return false /true if user(email) not exist / exist", () => {
+      checkIfUserExist("test@hottymail.com").then((exist) => {
+        expect(exist).toBe(true);
+      });
+      checkIfUserExist("test@hottym----ail.com").then((exist) => {
+        expect(exist).toBe(false);
+      });
+    });
+    
+
+    
+  }); // end of testing JWT Token Validation
+});// End of Testing Middleware

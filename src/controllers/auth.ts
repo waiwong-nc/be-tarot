@@ -11,6 +11,16 @@ import { selectUserByEmail } from "../models/users";
 import bcrypt from "bcryptjs";
 
 
+class CustomerError extends Error {
+  code: number;
+  constructor(message = "", code: number) {
+    super(message);
+    this.code = code;
+  }
+}
+
+
+// POST /api/auth/signup
 export const signUp = (req: Request, res: Response, next: NextFunction) => {
     const { username, password, email} = req.body;
     const code = Math.floor(1000 + Math.random() * 9000);
@@ -30,15 +40,8 @@ export const signUp = (req: Request, res: Response, next: NextFunction) => {
     .catch((err:any) => next(err));
 }
 
-class CustomerError extends Error {
-  code: number;
-  constructor(message = "", code: number) {
-    super(message);
-    this.code = code;
-  }
-}
 
-
+// POST /api/auth/signUpConfirom
 export const signUpConfirom = (req: Request, res: Response, next: NextFunction) => {
     const { code, pendingUserId } = req.body;
     
@@ -100,6 +103,7 @@ export const signUpConfirom = (req: Request, res: Response, next: NextFunction) 
     })
 };
 
+// POST /api/auth/login
 export const login = async (req: Request, res: Response, next: NextFunction) => {
   console.log(" in log in controller");
   let error: CustomerError;

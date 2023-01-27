@@ -13,6 +13,11 @@ export const generateToken = (email:string,userId:string ) => {
 };
 
 export const decodedToken = (token:string) => {
-  const secret: any = process.env.JWT_SECRET;
-  return jwt.verify(token, secret); // return true is the token valid
+  try{
+    const secret: any = process.env.JWT_SECRET;
+    return jwt.verify(token, secret);
+  }
+  catch(err){
+    return null
+  }
 }
