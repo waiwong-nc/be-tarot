@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import usersRouter from "./router/users";
 import entriesRouter from "./router/entries";
 import entryByIdRouter from "./router/entryById"
+import patchEntriesRouter from "./router/patchEntries"
 import { customerError, status404, status500 } from "./controllers/errors";
 
 
@@ -21,6 +22,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
 app.use("/api/users",usersRouter);
 app.use("/api/entries", entriesRouter);
 app.use("/api/entries/:entry_id", entryByIdRouter);
+app.use("/api/entries/:entry_id", patchEntriesRouter);
 
 
 // Only enable this router during development stage
