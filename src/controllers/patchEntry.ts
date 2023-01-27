@@ -6,10 +6,9 @@ import { patchEntry } from "../models/patchEntry";
 export const patchEntryById = (req: Request, res: Response, next: NextFunction) => {
   const { entry_id } = req.params;
   const editedEntry = req.body
-console.log(editedEntry, 'controller')
 patchEntry(entry_id, editedEntry)
   .then((entry) => {
-    res.status(200).send({entries: {entry}});
+    res.status(200).send({entry});
   })
   .catch((err: any) => {
     next(err);

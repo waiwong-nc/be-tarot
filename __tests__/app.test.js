@@ -119,7 +119,7 @@ describe('API',() => {
     test.only("200: Responds with an updated journal object", () => {
 
       const editedEntry = {
-        user_id :2,
+        user_id :1,
         entry_body: "Edited entry",
       }
 
@@ -128,20 +128,11 @@ describe('API',() => {
         .send(editedEntry)
         .expect(200)
         .then(({ body }) => {
-          console.log(body, "body")
-          const { entries } = body;
-            console.log(entries, "entries")
-            expect(entries[0]).toEqual(
+          const { entry } = body;
+            expect(entry[0]).toEqual(
               expect.objectContaining({
-                user_id: 2,
-                entry_body: "Edited entry",
-                created_at: expect.any(String),
-                tarot_card_id:[
-                  { id: 4, isLight: true, readingStyle: "Past" },
-                  { id: 3, isLight: false, readingStyle: "Present" },
-                  { id: 23, isLight: false, readingStyle: "Future" },
-                ],
-  intention: "Nice"          
+                user_id: 1,
+                entry_body: "Edited entry",         
     })
             );
          

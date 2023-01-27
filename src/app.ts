@@ -22,7 +22,7 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
 app.use("/api/users",usersRouter);
 app.use("/api/entries", entriesRouter);
 app.use("/api/entries/:entry_id", entryByIdRouter);
-app.use("/api/entries/:entry_id", patchEntriesRouter);
+app.use("/api/entries", patchEntriesRouter);
 
 
 // Only enable this router during development stage
