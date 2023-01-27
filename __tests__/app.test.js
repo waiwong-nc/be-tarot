@@ -2,7 +2,9 @@ const request = require('supertest');
 const app = require("../dist/app").default;
 const db = require("../dist/db/connection").default;
 const testData = require("../dist/db/data");
-const seed = require("../dist/db/seeds/seed")
+const seed = require("../dist/db/seeds/seed");
+const { generateToken } = require("../dist/utils/jwt");
+const { selectLatestUsesr } = require("../dist/models/auth");
 
 
 beforeEach(async () => {
@@ -119,6 +121,7 @@ describe('API',() => {
 
 // Testing Error Handler 
 describe("Error Handler", () => {
+  
   describe("404", () => {
     test('404: Respond with "Not Found" if url path (GET Request) not match', () => {
       return request(app)
@@ -128,7 +131,7 @@ describe("Error Handler", () => {
           const { msg } = body;
           expect(msg).toBe("Not Found");
         });
-    }); // End of Error 404 (GET)
+    }); 
 
     test('404: Respond with "Not Found" if url path (POST Request) not match', () => {
       return request(app)
@@ -138,7 +141,7 @@ describe("Error Handler", () => {
           const { msg } = body;
           expect(msg).toBe("Not Found");
         });
-    }); // End of Error 404 (POST)
+    }); 
   }); // End of dscribe(404)
 
   describe("500", () => {
@@ -150,7 +153,7 @@ describe("Error Handler", () => {
           const { msg } = body;
           expect(msg).toBe("Internal Server Error");
         });
-    }); // End of Error 404 (GET)
+    });
 
     test('22P02: Respond with "Bad Request" if database table not found', () => {
       return request(app)
@@ -160,7 +163,126 @@ describe("Error Handler", () => {
           const { msg } = body;
           expect(msg).toBe("Internal Server Error");
         });
-    }); // End of dscribe(500)
-  }); // End of Error Handler
-});
+    });
+  }); // End of dscribe(500)
 
+});// End of Error Handler
+
+
+
+
+// Testing Authentication 
+describe("Error Handler", () => {
+  describe("POST// api/auth/signup", () => {
+    const reqBody = {
+      username: "hello",
+      password: "1234567",
+      email: "wilson.ws.pro@gmail.com",
+    };
+
+    test("200: Successfully Sign up as a new user", () => {
+      return request(app)
+        .post("/api/auth/signup")
+        .send(reqBody)
+        .expect(200)
+        .then(({ body }) => {
+          const { pendingUserId } = body;
+          expect(pendingUserId).toEqual(expect.any(Number));
+        });
+    });
+
+    test("401: Email Address already ", () => {});
+    test("401: Email Empty ", () => {});
+    test("401: Email format not valid ", () => {});
+    test("401: Username Empty ", () => {});
+    test("401: Username too long ", () => {});
+    test("401: Password Empty ", () => {});
+    test("401: Password format valid ", () => {});
+  }); // End of Sign
+
+  describe.only("POST// api/auth/signUpConfirom", () => {
+      
+
+
+      function createPendingUser(body){
+        return request(app)
+        .post("/api/auth/signup")
+        .send(body).expect(200).then(({ body }) => {
+          return body.pendingUserId
+        })
+      };
+
+      function getCode(pendingUserId){
+          const sql = `SELECT * from pending_users WHERE user_id = $1;`;
+          return db.query(sql, [pendingUserId]).then(({rows}) => {
+              return rows[0].code;
+          });
+      };
+
+      function signUpConfirm(body) {
+        return request(app)
+          .post("/api/auth/signUpConfirm")
+          .send(body)
+          .expect(200)
+          .then(({ body }) => {
+            return body
+          });
+      };
+
+
+  
+      test("200: Creata a new user after send back a correct code to serve", () => {
+        
+        const reqBody = {
+          username: "hello",
+          password: "1234567",
+          email: "wilson.ws.pro@gmail.com",
+        };  
+
+        let pendingUserId;
+        
+
+        return createPendingUser(reqBody)
+          .then((userId) => {
+            pendingUserId = userId;
+            return getCode(pendingUserId);
+          })
+          .then((code) => {
+            const reqBody2 = {
+              code: code,
+              pendingUserId: pendingUserId,
+            };
+            return signUpConfirm(reqBody2);
+          })
+          .then((body) => {
+              return selectLatestUsesr()
+              .then((user) => {
+                const tokenToCheck = generateToken(
+                  user[0].email,
+                  user[0].user_id.toString()
+                );
+                const {token} = body;
+                expect(token).toBe(tokenToCheck);
+            })
+          });
+    });
+
+  }); // End of Login
+
+  describe("Login", () => {
+    test("200: Successfully login up as a new user", () => {});
+    test("401: Email Empty", () => {});
+    test("401: Email invalid", () => {});
+    test("401: Password Empty", () => {});
+    test("401: Password invalid", () => {});
+  }); // End of Login
+
+  describe("Rest", () => {
+    test("200: Successfully rest password", () => {});
+    test("200: Successfully rest username", () => {});
+    test("401: Username Empty ", () => {});
+    test("401: Username too long ", () => {});
+    test("401: Password Empty ", () => {});
+    test("401: Password format valid ", () => {});
+  }); // End of Login
+});// End of Testing Authentication

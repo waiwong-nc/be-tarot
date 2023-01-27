@@ -2,7 +2,7 @@ import Express from "express";
 import { NextFunction, Request, Response } from "express";
 import usersRouter from "./router/users";
 import entriesRouter from "./router/entries";
-import entryByIdRouter from "./router/entryById"
+import authRouter from "./router/auth"
 import { customerError, status404, status500 } from "./controllers/errors";
 
 
@@ -20,13 +20,13 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
 
 app.use("/api/users",usersRouter);
 app.use("/api/entries", entriesRouter);
-app.use("/api/entries/:entry_id", entryByIdRouter);
+app.use("/api/auth", authRouter);
 
 
-// Only enable this router during development stage
+// **** Only enable this router during development stage **** //
 import errorTestRouter from "./router/errorTest";
 app.use("/api/error-test", errorTestRouter);
-// Only enable this router during development stage
+// **** Only enable this router during development stage **** //
 
 // Error Handling
 app.all("*", status404);

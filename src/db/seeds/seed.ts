@@ -7,7 +7,7 @@ const seed = async(data: SeedDataType) => {
 
 
   const { usersData, entriesData } = data;
-
+  // await db.query(`DROP TABLE IF EXISTS pending_users;`);
   await db.query(`DROP TABLE IF EXISTS entries;`);
   await db.query(`DROP TABLE IF EXISTS users;`);
   await db.query(
@@ -60,6 +60,21 @@ const seed = async(data: SeedDataType) => {
     ];}));
 
     await db.query(insertEntriesQueryStr);
+
+
+    await db.query(
+      ` CREATE TABLE IF NOT EXISTS pending_users (
+        user_id SERIAL PRIMARY KEY,
+        user_name VARCHAR,
+        email VARCHAR,
+        password VARCHAR,
+        code INT,
+        is_expired BOOL DEFAULT FALSE,
+        is_invalid BOOL DEFAULT FALSE,
+        is_completed BOOL DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT NOW()
+    );`
+    );
 
 
 
