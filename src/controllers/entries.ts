@@ -31,14 +31,11 @@ selectEntryById(entry_id)
 
 // POST /api/postEntries - entries.ts
 export const postEntry = (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.body, "req.body")
-  console.log("in controller")
-  
+
     const entryBody = req.body
     insertEntry(entryBody)
       .then((entries) => {
-        console.log(entries, "entries in controller")
-        console.log({entries}, "{entries in controller}")
+
         const tarot_card_id= JSON.parse( entries.tarot_card_id)
 
         res.status(201).send({entries: [{ ... entries,  tarot_card_id}]});
