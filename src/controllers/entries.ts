@@ -16,8 +16,6 @@ export const getEntries = (req: Request, res: Response, next: NextFunction) => {
 // GET /api/getEntries
 export const getEntryById = (req: Request, res: Response, next: NextFunction) => {
   const { entry_id } = req.params;
-  console.log(entry_id, "entry_id in controller")
-  console.log("Hi from controllerr")
 
 selectEntryById(entry_id)
   .then((entries) => {

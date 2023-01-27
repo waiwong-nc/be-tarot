@@ -19,7 +19,6 @@ export const selectLatestUsesr = () => {
     })
 }
 
-
 export const createPendingUser = (
   username: string,
   password: string,

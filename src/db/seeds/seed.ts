@@ -6,8 +6,8 @@ const seed = async(data: SeedDataType) => {
 
 
 
-  const { usersData, entriesData } = data;
-  // await db.query(`DROP TABLE IF EXISTS pending_users;`);
+  const { usersData, entriesData, pendingUsersData } = data;
+  await db.query(`DROP TABLE IF EXISTS pending_users;`);
   await db.query(`DROP TABLE IF EXISTS entries;`);
   await db.query(`DROP TABLE IF EXISTS users;`);
   await db.query(
@@ -63,18 +63,26 @@ const seed = async(data: SeedDataType) => {
 
 
     await db.query(
-      ` CREATE TABLE IF NOT EXISTS pending_users (
+      ` CREATE TABLE pending_users (
         user_id SERIAL PRIMARY KEY,
         user_name VARCHAR,
         email VARCHAR,
         password VARCHAR,
         code INT,
-        is_expired BOOL DEFAULT FALSE,
-        is_invalid BOOL DEFAULT FALSE,
-        is_completed BOOL DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT NOW()
-    );`
+      );`
     );
+
+      const insertPendingUsersQueryStr = format(
+        "INSERT INTO pending_users (user_name, email, password,code, created_at) VALUES %L RETURNING *;",
+        pendingUsersData.map(
+          ({ user_name, email, password, code, created_at }) => {
+            return [user_name, email, password, code, created_at];
+          }
+        )
+      );
+
+      await db.query(insertPendingUsersQueryStr);
 
 
 

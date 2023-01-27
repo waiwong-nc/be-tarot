@@ -4,6 +4,17 @@ type userDataType = {
   password: string;
 };
 
+
+type pendingUserDataType = {
+  user_name: string;
+  email: string;
+  password: string;
+  code: number;
+  created_at: any;
+
+};
+
+
 type entriesDataType = {
   user_id: number;
   entry_body: string;
@@ -15,4 +26,6 @@ type entriesDataType = {
 type SeedDataType = {
   usersData: userDataType[];
   entriesData: entriesDataType[];
+  pendingUsersData: pendingUserDataType[];
 };
+

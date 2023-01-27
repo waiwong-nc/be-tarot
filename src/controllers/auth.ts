@@ -40,35 +40,47 @@ export const signUp = (req: Request, res: Response, next: NextFunction) => {
     .catch((err) => next(err));
 }
 
+class CustomerError extends Error {
+  code: number;
+  constructor(message = "", code: number) {
+    super(message);
+    this.code = code;
+  }
+}
+
+
 export const signUpConfirom = (req: Request, res: Response, next: NextFunction) => {
     const { code, pendingUserId } = req.body;
-    selectPendingUser(pendingUserId).then((pendingUser:any) => {
+    
+    selectPendingUser(pendingUserId)
+    .then((pendingUser:any) => {
+
         // check if expired
         const pendingUserCreateDate = pendingUser.created_at; // Step 1 - get the creation date
         const timeLimit = pendingUserCreateDate.getTime() + 15 * 60 * 1000; // Step 2 - change the date format to time format, and add 15 min
         const barDate = new Date(timeLimit); // Step 3 - change it back to date format for comparsion of the current time
         const currentDate = new Date();
+        let error: CustomerError;
 
         // Step 4 - compare.
         if (currentDate > barDate) {
-        deletePendingUser(pendingUserId).then(() => {
-            res.status(400).send({ msg: "expired" });
-            return;
-        });
+            return deletePendingUser(pendingUserId).then(() => {
+                error= new CustomerError('Code Expired',401);
+                return Promise.reject(error);
+            });
         }
 
         // check if code matched.
         if (code !== pendingUser.code) {
-        // if token doesnt match
-        deletePendingUser(pendingUserId).then(() => {
-            res.status(400).send({ msg: "invald code" });
-            return;
-        });
+            // if token doesnt match
+            return deletePendingUser(pendingUserId).then(() => {
+              error = new CustomerError("Code Invalid", 401);
+              return Promise.reject(error);
+            });
         }
 
         // if code matched.
         if (code === pendingUser.code) {
-
             createUser(
                 pendingUser.user_name,
                 pendingUser.email,
@@ -78,8 +90,15 @@ export const signUpConfirom = (req: Request, res: Response, next: NextFunction) 
                 const token = generateToken(user.email, user.user_id.toString());
                 res.status(200).send({token});
             });
+        } else {
+            // other unknow error
+            error = new CustomerError("Error in Confirmation", 401);
+            return Promise.reject(error);
         }
-    });
+    })
+    .catch((err) => {
+        next(err);
+    })
 };
 
 export const login = (req: Request, res: Response, next: NextFunction) => {
