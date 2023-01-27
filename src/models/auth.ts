@@ -48,8 +48,8 @@ export const deletePendingUser = (id: number) => {
 
 
 export const getCode = (pendingUserId:number) => {
-const sql = `SELECT * from pending_users WHERE user_id = $1;`;
-return db.query(sql, [pendingUserId]).then(({ rows }) => {
-    return rows[0].code;
-});
-}
+    const sql = `SELECT * from pending_users WHERE user_id = $1;`;
+    return db.query(sql, [pendingUserId]).then(({ rows }) => {
+        return rows[0].code;
+    });
+};

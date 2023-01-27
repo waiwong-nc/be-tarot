@@ -7,19 +7,8 @@ import {
 } from "../models/auth";
 import sendEmail from "../utils/email";
 import { generateToken } from '../utils/jwt';
-
-
-function setTimeBar(limit:number): number {
-    return new Date().getTime() + (limit * 30 * 1000);
-}
-
-function isExpired(barTimeInSecond:number):boolean {
-    const currentTime = new Date();
-    const barTime = new Date(barTimeInSecond);
-    return (currentTime > barTime) ? false : true;
-}
-
-
+import { selectUserByEmail } from "../models/users";
+import bcrypt from "bcryptjs";
 
 
 export const signUp = (req: Request, res: Response, next: NextFunction) => {
@@ -31,13 +20,14 @@ export const signUp = (req: Request, res: Response, next: NextFunction) => {
     const body = `Please confirm the email address by entering this code : ${code} `;
 
     sendEmail(email,subject,body)
-    .then(()=>{
-        return createPendingUser(username, password, email, code);
+    .then(async ()=>{
+        const hashedPwd = await bcrypt.hash(password,12);
+        return createPendingUser(username, hashedPwd, email, code);
     })
-    .then((pendingUserId) => {
+    .then((pendingUserId:number) => {
         res.status(200).send({pendingUserId});
     })
-    .catch((err) => next(err));
+    .catch((err:any) => next(err));
 }
 
 class CustomerError extends Error {
@@ -87,8 +77,17 @@ export const signUpConfirom = (req: Request, res: Response, next: NextFunction) 
                 pendingUser.password
             )
             .then((user) => {
-                const token = generateToken(user.email, user.user_id.toString());
-                res.status(200).send({token});
+
+                const jwt = generateToken(user.email, user.user_id.toString());
+                const return_user = {
+                    jwt: jwt,
+                    user_id: user.user_id,
+                    email: user.email,
+                    user_name: user.user_name,
+                };
+
+                
+                res.status(200).send({ user: return_user });
             });
         } else {
             // other unknow error
@@ -101,7 +100,42 @@ export const signUpConfirom = (req: Request, res: Response, next: NextFunction) 
     })
 };
 
-export const login = (req: Request, res: Response, next: NextFunction) => {
+export const login = async (req: Request, res: Response, next: NextFunction) => {
   console.log(" in log in controller");
-    return;
+  let error: CustomerError;
+  const { email, password } = req.body;
+  selectUserByEmail(email).then((users) => {
+    // check if has such email in db
+    if (users.length === 0) {
+      error = new CustomerError("Email Not Found", 401);
+      return Promise.reject(error);
+    };
+
+    const user = users[0];
+
+    // check if password match
+    bcrypt.compare(password, user.password)
+    .then(()=> {
+        const jwt = generateToken(user.email, user.user_id.toString());
+        const return_user = {
+          jwt: jwt,
+          user_id: user.user_id,
+          email: user.email,
+          user_name : user.user_name,
+        };
+        
+        res.status(200).send({ user: return_user });
+    })
+    .catch(()=> {
+        error = new CustomerError("Incorrect Password", 401);
+        return Promise.reject(error);
+    });
+
+  })
+  .catch((err) => {
+      console.log(err)
+      next(err);
+  })
+//    
+//     return;
 };

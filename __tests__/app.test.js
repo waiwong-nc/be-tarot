@@ -9,6 +9,7 @@ const {
   createPendingUser,
   selectPendingUser,
 } = require("../dist/models/auth");
+const bcrypt = require("bcryptjs");
 
 beforeEach(async () => {
   await seed.default(testData);
@@ -254,11 +255,15 @@ describe("Authentication", () => {
               user[0].email,
               user[0].user_id.toString()
             );
-            const { token } = body;
-            expect(token).toBe(tokenToCheck); // get JWT
+
+            const { jwt, user_id, email, user_name } = body.user;
+            expect(jwt).toBe(tokenToCheck); // get JWT
+            expect(user_name).toBe("helloworld123");
+            expect(email).toBe("wilson.ws.pro@gmail.com");
+            expect(user_id).toBe(7);  // the new record must be 7
             expect(user[0].user_name).toBe("helloworld123");
             expect(user[0].email).toBe("wilson.ws.pro@gmail.com");
-            expect(user[0].password).toBe("1234567");
+  
           });
         });
     });
@@ -301,8 +306,29 @@ describe("Authentication", () => {
     });
   }); // End of POST// api/auth/signUpConfirim"
 
-  describe("Login", () => {
-    // test("200: Successfully login up as a new user", () => {});
+  describe("POST// api/auth/login", () => {
+    
+    test("200: Return a JWT after Successfully login", () => {
+      const reqBody = {
+        user_id: 3,
+        email: "john@tarotmail.com",
+        password: "johnhere",
+        user_name: "John",
+      };
+
+      return request(app)
+        .post("/api/auth/login")
+        .send(reqBody)
+        .expect(200)
+        .then(({ body }) => {
+          const { jwt, user_id, email, user_name } = body.user;
+          const token = generateToken("john@tarotmail.com", (3).toString());
+          expect(jwt).toBe(token);
+          expect(user_id).toBe(3);
+          expect(email).toBe("john@tarotmail.com");
+          expect(user_name).toBe("John");
+        });
+    });
     // test("401: Email Empty", () => {});
     // test("401: Email invalid", () => {});
     // test("401: Password Empty", () => {});

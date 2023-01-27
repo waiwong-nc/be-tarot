@@ -1,32 +1,43 @@
 import format from "pg-format";
 import db from "../connection";
+import bcrypt from "bcryptjs";
 
 const seed = async (data: SeedDataType) => {
   const { usersData, entriesData, pendingUsersData } = data;
   await db.query(`DROP TABLE IF EXISTS pending_users;`);
   await db.query(`DROP TABLE IF EXISTS entries;`);
   await db.query(`DROP TABLE IF EXISTS users;`);
+
+  //  Create table "users" and insert data into the table
   await db.query(
-    // Create users table first
     ` CREATE TABLE users (
           user_id SERIAL PRIMARY KEY,
           user_name VARCHAR NOT NULL,
           email VARCHAR NOT NULL,
-          password VARCHAR NOT NULL
+          password VARCHAR NOT NULL,
+          created_at TIMESTAMP DEFAULT NOW()
     );`
   );
 
-  const insertUsersQueryStr = format(
-    "INSERT INTO users (user_name, email, password) VALUES %L RETURNING *;",
-    usersData.map(({ user_name, email, password }) => [
-      user_name,
-      email,
-      password,
-    ])
+  const insertUsersDataPromises = usersData.map(
+    ({ user_name, email, password }) => {
+      return bcrypt.hash(password, 12).then((hashedPwd: string) => {
+        return [user_name, email, hashedPwd];
+      });
+    }
   );
+
+  let insertUsersQueryStr = "";
+  await Promise.all(insertUsersDataPromises).then((promises) => {
+    insertUsersQueryStr = format(
+      "INSERT INTO users (user_name, email, password) VALUES %L RETURNING *;",
+      promises
+    );
+  });
 
   await db.query(insertUsersQueryStr);
 
+  //  Create table "entries" and insert data into the table
   await db.query(
     ` CREATE TABLE entries (
         entry_id SERIAL PRIMARY KEY,
@@ -56,6 +67,7 @@ const seed = async (data: SeedDataType) => {
 
   await db.query(insertEntriesQueryStr);
 
+  //  Create table "pending_users" and insert data into the table
   await db.query(
     ` CREATE TABLE pending_users (
         user_id SERIAL PRIMARY KEY,
@@ -67,12 +79,21 @@ const seed = async (data: SeedDataType) => {
       );`
   );
 
-  const insertPendingUsersQueryStr = format(
-    "INSERT INTO pending_users (user_name, email, password,code, created_at) VALUES %L RETURNING *;",
-    pendingUsersData.map(({ user_name, email, password, code, created_at }) => {
-      return [user_name, email, password, code, created_at];
-    })
+  const insertPendingUsersDataPromises = pendingUsersData.map(
+    ({ user_name, email, password, code, created_at }) => {
+      return bcrypt.hash(password, 12).then((hashedPwd) => {
+        return [user_name, email, hashedPwd, code, created_at];
+      });
+    }
   );
+
+  let insertPendingUsersQueryStr = "";
+  await Promise.all(insertPendingUsersDataPromises).then((promises) => {
+    insertPendingUsersQueryStr = format(
+      "INSERT INTO pending_users (user_name, email, password,code, created_at) VALUES %L RETURNING *;",
+      promises
+    );
+  });
 
   await db.query(insertPendingUsersQueryStr);
 };
