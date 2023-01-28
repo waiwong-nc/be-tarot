@@ -16,6 +16,10 @@ declare module "express-serve-static-core" {
     }
 };
 
+export const checkIfUserExist = async (email: string) => {
+  const users = await selectUserByEmail(email);
+  return users.length > 0 ? true : false;
+};
 
 
 export const auth =  (req: Request, res: Response, next: NextFunction) => {
@@ -32,18 +36,26 @@ export const auth =  (req: Request, res: Response, next: NextFunction) => {
     const authHeader: any = req.header("authorization");
     const token = authHeader.split(" ")[1];
 
+
     // Step 3 - Check if the token valid
     const decodeTokenObj:any = decodedToken(token);
+  
     if (!decodeTokenObj) {
         error = new CustomerError("Invalid Token", 401);
         next(error);
-    };
+        
+    }
 
-    req.userId = decodeTokenObj.userId; 
+    req.userId = decodeTokenObj.userId;
     next();
+    
 }
 
-export const checkIfUserExist = async (email:string) => {
-    const users = await selectUserByEmail(email);
-    return (users)? true: false;
+
+
+export const requireLoginError = () =>{
+    return new CustomerError(
+        'Unauthorised',
+        401
+    )
 }

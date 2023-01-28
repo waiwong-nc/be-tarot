@@ -4,8 +4,7 @@ import usersRouter from "./router/users";
 import entriesRouter from "./router/entries";
 import authRouter from "./router/auth";
 import { customerError, status404, status500 } from "./controllers/errors";
-
-
+import path from "path";
 
 const app = Express();
 const cors = require("cors");
@@ -13,9 +12,10 @@ app.use(Express.json());
 app.use(cors());
 
 
+
 // Routes 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
-    res.status(200).send({msg:"Server Ready"}); 
+    res.sendFile(path.join(__dirname, '/views/index.html'))
 });
 
 

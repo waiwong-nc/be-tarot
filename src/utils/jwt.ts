@@ -8,7 +8,7 @@ export const generateToken = (email:string,userId:string ) => {
       userId: userId
     },
     secret,
-    { expiresIn: "180d" }
+    { expiresIn: "1d" }
   );
 };
 
@@ -18,6 +18,6 @@ export const decodedToken = (token:string) => {
     return jwt.verify(token, secret);
   }
   catch(err){
-    return null
+    return false;
   }
 }

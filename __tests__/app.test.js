@@ -23,9 +23,7 @@ afterAll((done) => {
   done();
 });
 
-// do login process here
-//  ....
-//  ....
+
 
 describe("API", () => {
   describe("GET /", () => {
@@ -40,10 +38,7 @@ describe("API", () => {
   }); // End of "GET /"
 
   describe("GET /api/users", () => {
-    // const isLoggin = { some process ... => set it to true }
-    // test(if authentication work ).expect(....)
-
-    test("200: Respond with array of all user objects", () => {
+    test.skip("200: Respond with array of all user objects", () => {
       return request(app)
         .get("/api/users")
         .expect(200)
@@ -64,17 +59,53 @@ describe("API", () => {
     });
   }); // End of "GET /api/users";
 
+  describe("GET /api/users/profile", () => {
+    test("200: Respond with single user objects (username, email)", () => {
+      const token = generateToken("test@hottymail.com", 1);
+      return request(app)
+        .get("/api/users/profile")
+        .set({ Authorization: `bearer ${token}` })
+        .expect(200)
+        .then(({ body }) => {
+          const { user } = body;
+          console.log(user);
+          expect(user).toEqual(
+            expect.objectContaining({
+              user_id: expect.any(Number),
+              user_name: expect.any(String),
+              email: expect.any(String),
+              // password: expect.any(String),
+            })
+          );
+        });
+    });
+
+    test("401: Respond with 'Invalid Token' if token not valid", () => {
+      const token = "";
+      return request(app)
+        .get("/api/users/profile")
+        .set({ Authorization: `bearer ${token}` })
+        .expect(401)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Invalid Token");
+        });
+    });
+  }); // End of "GET /api/users";
+
   describe("GET /api/entries", () => {
     // const isLoggin = { some process ... => set it to true }
     // test(if authentication work ).expect(....)
 
     test("200: Respond with array of all entries objects", () => {
+      const token = generateToken("test@hottymail.com", 1);
       return request(app)
         .get("/api/entries")
+        .set({ Authorization: `bearer ${token}` })
         .expect(200)
         .then(({ body }) => {
           const { entries } = body;
-          expect(entries).toHaveLength(13);
+          expect(entries).toHaveLength(5);
           entries.forEach((entry) => {
             expect(entry).toEqual(
               expect.objectContaining({
@@ -91,32 +122,67 @@ describe("API", () => {
   }); // End of "GET /api/entries";
 
   describe("GET /api/entries/:entry_id", () => {
-    // const isLoggin = { some process ... => set it to true }
-    // test(if authentication work ).expect(....)
-
     test("200: Respond with a single entry object", () => {
+      const token = generateToken("test@tarotmail.com ", 1);
       return request(app)
-        .get("/api/entries/2")
+        .get("/api/entries/5")
+        .set({ Authorization: `bearer ${token}` })
         .expect(200)
         .then(({ body }) => {
           const { entries } = body;
           expect(entries[0]).toEqual(
             expect.objectContaining({
-              user_id: 2,
-              entry_body:
-                "The way to get started is to quit talking and begin doing",
+              user_id: 1,
+              entry_body: "Not Excellent. Goat Ice Cream",
               created_at: expect.any(String),
               tarot_card_id: [
-                { id: 4, isLight: true, readingStyle: "Past" },
-                { id: 3, isLight: false, readingStyle: "Present" },
-                { id: 23, isLight: false, readingStyle: "Future" },
+                { id: 41, isLight: true, readingStyle: "Strengths" },
+                { id: 36, isLight: false, readingStyle: "Weaknesses" },
+                { id: 45, isLight: true, readingStyle: "Growth" },
               ],
-              intention: "Nice",
+              intention: "Nuffin",
             })
           );
         });
     });
   }); // End of "GET /api/entries/:entry_id
+
+  describe("POST /api/entry", () => {
+    
+    test.only("200: Respond with a single entry object", () => {
+      const reqBody = {
+        intention: "What a Good Date",
+        entry_body: "hahahah hehehhe yayaya",
+        tarot_card_id: [
+          { id: 41, isLight: true, readingStyle: "Strengths" },
+          { id: 36, isLight: false, readingStyle: "Weaknesses" },
+          { id: 45, isLight: true, readingStyle: "Growth" },
+        ],
+      };
+      const token = generateToken("test@tarotmail.com", 1);
+      return request(app)
+        .post("/api/entries")
+        .set({ Authorization: `bearer ${token}` })
+        .send(reqBody)
+        .expect(201)
+        .then(({ body }) => {
+          const { entries } = body;
+          expect(entries[0]).toEqual(
+            expect.objectContaining({
+              user_id: 1,
+              entry_body: "hahahah hehehhe yayaya",
+              created_at: expect.any(String),
+              tarot_card_id: [
+                { id: 41, isLight: true, readingStyle: "Strengths" },
+                { id: 36, isLight: false, readingStyle: "Weaknesses" },
+                { id: 45, isLight: true, readingStyle: "Growth" },
+              ],
+              intention: "What a Good Date",
+            })
+          );
+        });
+    });
+  }); // End of "POST /api/entries/:entry_id
 }); // End of "API"
 
 // Testing Error Handler
@@ -187,14 +253,135 @@ describe("Authentication", () => {
         });
     });
 
-    // test("401: Email Address already ", () => {});
-    // test("401: Email Empty ", () => {});
-    // test("401: Email format not valid ", () => {});
-    // test("401: Username Empty ", () => {});
-    // test("401: Username too long ", () => {});
-    // test("401: Password Empty ", () => {});
-    // test("401: Password format valid ", () => {});
-  }); // End of Sign
+    test("422: Return 'Email Already in Use' is email duplicate ", () => {
+      const reqBody = {
+        username: "this is username",
+        email: "test@hottymail.com",
+        password: "thisispassword",
+      };
+      return request(app)
+        .post("/api/auth/signup")
+        .send(reqBody)
+        .expect(422)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Email Already in Use");
+        });
+    });
+
+    test("422: Return 'Email Invalid' if email is empty ", () => {
+      const reqBody = {
+        username: "this is username",
+        email: "   ",
+        password: "thisispassword",
+      };
+      return request(app)
+        .post("/api/auth/signup")
+        .send(reqBody)
+        .expect(422)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Email Invalid");
+        });
+    });
+
+    test("422: Return 'Email Invalid' if Email format not valid ", () => {
+      const reqBody = {
+        username: "this is username",
+        email: "123@.com",
+        password: "thisispassword",
+      };
+      return request(app)
+        .post("/api/auth/signup")
+        .send(reqBody)
+        .expect(422)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Email Invalid");
+        });
+    });
+
+    test("422: Return 'Username Empty' if username input is empty ", () => {
+      const reqBody = {
+        username: "",
+        email: "123456@gmail.com",
+        password: "thisispassword",
+      };
+      return request(app)
+        .post("/api/auth/signup")
+        .send(reqBody)
+        .expect(422)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Username Empty");
+        });
+    });
+    test("422: Return 'Invalid Value' if username too long (> 30 cahracters) ", () => {
+      const reqBody = {
+        username:
+          "asfasfasfasfasfasfasfasfasfasfasfasfasfasfasfasfasfasfasfasfasfasf",
+        email: "123456@gmail.com",
+        password: "thisispassword",
+      };
+      return request(app)
+        .post("/api/auth/signup")
+        .send(reqBody)
+        .expect(422)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Invalid value");
+        });
+    });
+
+    test("422: Return 'Password Empty' if password input is empty ", () => {
+      const reqBody = {
+        username: "sfdsafasdadf",
+        email: "123456@gmail.com",
+        password: "",
+      };
+      return request(app)
+        .post("/api/auth/signup")
+        .send(reqBody)
+        .expect(422)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Password Empty");
+        });
+    });
+
+    test("422: Return 'Invalid Value' if password too long (> 30 cahracters) ", () => {
+      const reqBody = {
+        username: "kjkljkljklk",
+        email: "123456@gmail.com",
+        password:
+          "asfasfasfasfasfasfasfasfasfasfasfasfasfasfasfasfasfasfasfasfasfasf",
+      };
+      return request(app)
+        .post("/api/auth/signup")
+        .send(reqBody)
+        .expect(422)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Invalid value");
+        });
+    });
+
+    test("422: Return 'Username Invalid' if password too short ( < 6 cahracters) ", () => {
+      const reqBody = {
+        username: "fasdfsadfadsf",
+        email: "123456@gmail.com",
+        password: "thd",
+      };
+      return request(app)
+        .post("/api/auth/signup")
+        .send(reqBody)
+        .expect(422)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Invalid value");
+        });
+    });
+  }); // End of Sign In
 
   // Sign up Confirmation
   describe("POST// api/auth/signUpConfirim", () => {
@@ -208,6 +395,7 @@ describe("Authentication", () => {
           return body.pendingUserId;
         });
     }
+
 
     // function to get the code in email
     function getCode(pendingUserId) {
@@ -309,6 +497,8 @@ describe("Authentication", () => {
     });
   }); // End of POST// api/auth/signUpConfirim"
 
+
+  // Login In Testing
   describe("POST// api/auth/login", () => {
     
     test("200: Return a JWT after Successfully login", () => {
@@ -332,28 +522,68 @@ describe("Authentication", () => {
           expect(user_name).toBe("John");
         });
     });
-    // test("401: Email Empty", () => {});
-    // test("401: Email invalid", () => {});
-    // test("401: Password Empty", () => {});
-    // test("401: Password invalid", () => {});
+
+
+    test("422: Return 'Email Not Found' if no such email in db ", () => {
+      const reqBody = {
+        username: "fasdfsadfadsf",
+        email: "aff@gmail.com",
+        password: "thd",
+      };
+      return request(app)
+        .post("/api/auth/login")
+        .send(reqBody)
+        .expect(422)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Email Not Found");
+        });
+    });
+
+    test("422: Return 'Email Invalid' if email format not correct ", () => {
+      const reqBody = {
+        username: "fasdfsadfadsf",
+        email: "aff@ -gmailcom",
+        password: "thd",
+      };
+      return request(app)
+        .post("/api/auth/login")
+        .send(reqBody)
+        .expect(422)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Email Invalid");
+        });
+    });
+
+  
+
+
+    test("422: Return 'Password Empty' if password input is empty ", () => {
+      const reqBody = {
+        username: "sfdsafasdadf",
+        email: "test@tarotmail.com",
+        password: "",
+      };
+      return request(app)
+        .post("/api/auth/login")
+        .send(reqBody)
+        .expect(422)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Password Empty");
+        });
+    });
   }); // End of Login
 
-  describe("Rest", () => {
-    // test("200: Successfully rest password", () => {});
-    // test("200: Successfully rest username", () => {});
-    // test("401: Username Empty ", () => {});
-    // test("401: Username too long ", () => {});
-    // test("401: Password Empty ", () => {});
-    // test("401: Password format valid ", () => {});
-  }); // End of Login
 }); // End of Testing Authentication
 
 
 
-describe.only("Middleware - is-Auth", () => {
+describe("Middleware - is-Auth", () => {
 
   describe("JWT Token Validation", () => {
-    test("GET/ api/users/ - show all if jwt valid (for admin use only)", () => {
+    test.skip("GET/ api/users/ - show all if jwt valid (for admin use only)", () => {
       const token = generateToken("john@tarotmail.com", (3).toString());
       const headerConfig = {
         Authorization: `Bearer ${token}`,
@@ -402,7 +632,7 @@ describe.only("Middleware - is-Auth", () => {
         });
     });
 
-    test.only("Return false /true if user(email) not exist / exist", () => {
+    test("Return false /true if user(email) not exist / exist", () => {
       checkIfUserExist("test@hottymail.com").then((exist) => {
         expect(exist).toBe(true);
       });
@@ -410,8 +640,5 @@ describe.only("Middleware - is-Auth", () => {
         expect(exist).toBe(false);
       });
     });
-    
-
-    
   }); // end of testing JWT Token Validation
 });// End of Testing Middleware

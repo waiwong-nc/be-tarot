@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Tarot App API Documentation </title>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    </head>
+    
+    <body>
+        <header>
+            <h1> Tarot App v1.0.0 Documentation </h1>
+            <p> This is the documentation of using Tarot app's API</p>
+            <a href="https://github.com/waiwong-nc/be-tarot.git">Github (Backend)</a>
+            <a href="https://github.com/9RedThreads/fe-Tarot.git">Github (Fontend)</a>
+        </header>
+
+        <main>
+            <div id="api-index">
+                
+                <h1> APIs Index </h1>
+                <div class="api-index-box">
+                    <h3>Authentication</h3>
+                    <div class="api-end-point">
+                        <p>POST /api/auth/signup</p>
+                        <div class="api-hidden-box">
+                            <div class="arrow"></div>
+                            <h4>Input</h4> 
+                            { <br>  &nbsp username: STRING, <br>  &nbsp password: STRING, <br>  &nbsp email: STRING <br> }
+                            <h4>Return</h4> 
+                            pendingUserId : {  <br>pendingUserId : NUMBER <br>}
+                            </div>
+                        </div>
+                    <div class="api-end-point">
+                        <p>POST /api/auth/signUpConfirm</p>
+                        <div class="api-hidden-box">
+                            <div class="arrow"></div>
+                            <h4>Input</h4> 
+                            { <br>  
+                            &nbsp code: NUMBER, <br>  
+                            &nbsp pendingUserId: NUMBER, <br>  
+                            } 
+                            <h4>Return</h4> 
+                            user : { <br>  
+                            &nbsp jwt: STRING, <br>  
+                            &nbsp user_id: NUMBER, <br>  
+                            &nbsp user_name: STRING, <br>  
+                            &nbsp email: STRING, <br>  
+                            } 
+                    </div>
+                    </div>
+                    <div class="api-end-point">
+                    <p>POST  /api/auth/login</p>
+                     <div class="api-hidden-box">
+                            <div class="arrow"></div>
+                            <h4>Input</h4> 
+                            { <br>  
+                            &nbsp email: STRING, <br>  
+                            &nbsp password: STRING, <br>  
+                            } 
+                            <h4>Return</h4> 
+                            user : { <br>  
+                            &nbsp jwt: STRING, <br>  
+                            &nbsp user_id: NUMBER, <br>  
+                            &nbsp user_name: STRING, <br>  
+                            &nbsp email: STRING, <br>  
+                            } 
+                    </div>
+                    </div>
+                </div>
+                
+                <div class="api-index-box">
+                    <h3>Users</h3>
+                    <!-- <div class="api-end-point">
+                        <p>GET /api/users</p>
+                         <div class="api-hidden-box">
+                            <div class="arrow"></div>
+                            <h4>Return</h4> 
+                            user : { <br>  
+                            &nbsp user_id: NUMBER, <br>  
+                            &nbsp user_name: STRING, <br>  
+                            &nbsp email: STRING, <br>  
+                            &nbsp password: STRING, <br>  
+                            } 
+                        </div>
+
+                    </div> -->
+                    <div class="api-end-point">
+                    <p>GET /api/users/profile</p>
+                    <div class="api-hidden-box">
+                            <div class="arrow"></div>
+    
+                            <h4>Return</h4> 
+                            user : { <br>  
+                            &nbsp user_id: NUMBER, <br>  
+                            &nbsp user_name: STRING, <br>  
+                            &nbsp email: STRING, <br>  
+                            } 
+                        </div>
+                    </div>
+                </div>
+
+                <div class="api-index-box">
+                    <h3>Entries</h3>
+                    <div class="api-end-point">
+                    <p>GET /api/entries</p>
+                    <div class="api-hidden-box">
+                            <div class="arrow"></div>
+                            <h4>Return</h4> 
+                            entries : [ <br>{ <br>  
+                            &nbsp user_id: NUMBER, <br>  
+                            &nbsp entry_body: STRING, <br>  
+                            &nbsp intention: STRING, <br>  
+                            &nbsp created_at: DATE, <br>  
+                            &nbsp tarot_card_id: [ <br>
+                                &nbsp &nbsp  { <br>
+                                 &nbsp &nbsp&nbsp &nbsp   id: STRING,<br>
+                                  &nbsp &nbsp&nbsp &nbsp    isLight: BOOL,<br>
+                                 &nbsp &nbsp&nbsp &nbsp      readingStyle: STRING<br>
+                                 &nbsp &nbsp&nbsp   }, <br>
+                                 &nbsp &nbsp  &nbsp &nbsp   ...<br>
+                            &nbsp  ],<br>
+                            } <br>
+                            { ... }<br>
+                            { ... }<br>   
+                            { ... }<br>   
+                            { ... }<br>    
+                            ] 
+                            
+                        </div>
+                    </div>
+                    <div class="api-end-point">
+                    <p>GET /api/entries/:entry_id</p>
+                    <div class="api-hidden-box">
+                            <div class="arrow"></div>
+                            <h4>Return</h4> 
+                            entries : [{ <br>  
+                            &nbsp user_id: NUMBER, <br>  
+                            &nbsp entry_body: STRING, <br>  
+                            &nbsp intention: STRING, <br>  
+                            &nbsp created_at: DATE, <br>  
+                             &nbsp tarot_card_id: [ <br>
+                                &nbsp &nbsp  { <br>
+                                 &nbsp &nbsp&nbsp &nbsp   id: STRING,<br>
+                                  &nbsp &nbsp&nbsp &nbsp    isLight: BOOL,<br>
+                                 &nbsp &nbsp&nbsp &nbsp      readingStyle: STRING<br>
+                                 &nbsp &nbsp&nbsp   }, <br>
+                                 &nbsp &nbsp  &nbsp &nbsp   ...<br>
+                                   &nbsp  ],<br>
+                                }] 
+                            
+                        </div>
+                    </div>
+                    <div class="api-end-point">
+                    <p>POST /api/entries</p>
+                        <div class="api-hidden-box">
+                                <div class="arrow"></div>
+                                <h4>Input</h4> 
+                                { <br>  
+                                &nbsp intention: STRING, <br>
+                                &nbsp entry_body: STRING, <br>
+                                &nbsp tarot_card_id: [ <br>
+                                &nbsp &nbsp  { <br>
+                                 &nbsp &nbsp&nbsp &nbsp   id: STRING,<br>
+                                  &nbsp &nbsp&nbsp &nbsp    isLight: BOOL,<br>
+                                 &nbsp &nbsp&nbsp &nbsp      readingStyle: STRING<br>
+                                 &nbsp &nbsp&nbsp   }, <br>
+                                 &nbsp &nbsp  &nbsp &nbsp   ...<br>
+                                   &nbsp  ],<br>
+                                } 
+                                <h4>Return</h4> 
+                                entries :   { <br>  
+                                &nbsp entry_id: NUMBER, <br>
+                                &nbsp intention: STRING, <br>
+                                &nbsp entry_body: STRING, <br>
+                                &nbsp tarot_card_id: [ <br>
+                                &nbsp &nbsp  { <br>
+                                 &nbsp &nbsp&nbsp &nbsp   id: STRING,<br>
+                                  &nbsp &nbsp&nbsp &nbsp    isLight: BOOL,<br>
+                                 &nbsp &nbsp&nbsp &nbsp      readingStyle: STRING<br>
+                                 &nbsp &nbsp&nbsp   }, <br>
+                                 &nbsp &nbsp  &nbsp &nbsp   ...<br>
+                                   &nbsp  ],<br>
+                                } 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="api-explanation">
+
+                <h1> APIs Explanation </h1>
+                    <div class="tag">
+                        <div id="create_user_tag" class="tag-active">Create User</div>
+                        <div id="login_tag" >Login</div>
+                        <div id="post_entry_tag" >Post Entry</div>
+                    </div>
+                
+                <article id="create_user" class="explanation content-active">
+ 
+                    <h2>Create User</h2> 
+                    <p>
+                        <h3>Step 1</h3>
+                        The first step to create user is to make a sign up request: <br> 
+                        <code>POST /api/auth/signup</code> <br><br>
+                        Following object is required when you post the above request: <br>
+                        <code>
+                        { <br>  
+                            &nbsp username: STRING, <br>  
+                            &nbsp password: STRING, <br>  
+                            &nbsp email: STRING <br>  
+                        } </code>
+                        <br><br>
+                        
+
+                        Remark:<br>
+                        <code>username</code> Cannot be empty and length must be within 1 to 30 characters long <br>
+                        <code>password</code> Cannot be empty and length must be within 1 to 30 characters long <br>
+                        <br>
+
+                        If success, it will return a "Pending User ID" <code>pendingUserId</code><br>
+                        Then check your email, you will receive a 4-digit<code>code</code>. You will need the <code>code</code> in next step. <br><br>
+
+                        <h3>Step 2</h3>
+                        The second step is to send a confirm request:<br>
+                        <code>POST /api/auth/signUpConfirm</code> <br><br>
+                        You need to post the <code>pendingUserId</code> and the 4-digit<code>code</code> to complete this process:<br>
+                        <code>
+                        { <br>  
+                            &nbsp code: NUMBER, <br>  
+                            &nbsp pendingUserId: NUMBER, <br>  
+                        } </code>
+                        <br><br>
+                        If the request is succeful, a user object will be returned :<br>
+                        <code>
+                        user : { <br>  
+                            &nbsp jwt: STRING, <br>  
+                            &nbsp user_id: NUMBER, <br>  
+                            &nbsp user_name: STRING, <br>  
+                            &nbsp email: STRING, <br>  
+                        } </code>
+                        <br></br>
+
+                        Save the <code>jwt</code> into you local device. You will need this token for identification when you are using the app.Save the new <code>jwt</code> in you device and attach it to every reaquest's (attach in "Authorization").
+                        This token will be valid for 24 hours. <br><br>
+                        
+                    </p>
+                </article>
+
+                <article id="login" class="explanation">
+                    <h2>Login</h2> 
+                    <p>
+                        The JWT will be invalid 24 hours after logging in. You will need to log in again in order to get access to different api end points. <br>
+           To log in, you need to post a request to  <code>POST /api/auth/signup</code>  with folloing data:<br>
+           <code>{ <br>  
+                            &nbsp username: STRING, <br>  
+                            &nbsp password: STRING, <br>  
+                        } </code>
+                         <br><br>
+                        If the request is succeful, a user object will be returned :<br>
+                        <code>
+                        user : { <br>  
+                            &nbsp jwt: STRING, <br>  
+                            &nbsp user_id: NUMBER, <br>  
+                            &nbsp user_name: STRING, <br>  
+                            &nbsp email: STRING, <br>  
+                        } </code>
+                        <br></br>
+                        Save the new <code>jwt</code> in you device and attach it to every reaquest's (attach in "Authorization");
+    
+                    </p>
+                </article>
+
+                <article id="post_entry" class="explanation">
+                    <h2>Post Entry</h2> 
+                    <p>To Create an entry, you need to post a request to  <code>POST /api/entries</code>  with folloing data:<br>
+                        <code>
+                                { <br>  
+                                &nbsp intention: STRING, <br>
+                                &nbsp entry_body: STRING, <br>
+                                &nbsp tarot_card_id: [ <br>
+                                &nbsp &nbsp  { <br>
+                                 &nbsp &nbsp&nbsp &nbsp   id: STRING,<br>
+                                  &nbsp &nbsp&nbsp &nbsp    isLight: BOOL,<br>
+                                 &nbsp &nbsp&nbsp &nbsp      readingStyle: STRING<br>
+                                 &nbsp &nbsp&nbsp   }, <br>
+                                 &nbsp &nbsp  &nbsp &nbsp   ...<br>
+                                   &nbsp  ],<br>
+                                } 
+                            </code> <br></br>
+                            The following is the return from server: <br>
+                                <code>
+                                entries :   { <br>  
+                                &nbsp entry_id: NUMBER, <br>
+                                &nbsp intention: STRING, <br>
+                                &nbsp entry_body: STRING, <br>
+                                &nbsp tarot_card_id: [ <br>
+                                &nbsp &nbsp  { <br>
+                                 &nbsp &nbsp&nbsp &nbsp   id: STRING,<br>
+                                  &nbsp &nbsp&nbsp &nbsp    isLight: BOOL,<br>
+                                 &nbsp &nbsp&nbsp &nbsp      readingStyle: STRING<br>
+                                 &nbsp &nbsp&nbsp   }, <br>
+                                 &nbsp &nbsp  &nbsp &nbsp   ...<br>
+                                   &nbsp  ],<br>
+                                } 
+                                </code>
+                    </p>
+                </article>
+            </div>
+            
+        </main>
+
+        <footer>
+            <h1>Creators - TEAM OVER REACT </h1>
+            <p>Bail</p>
+            <p>Joseph Shearon</p>
+            <p>Richard Hoyle</p>
+            <p>Sidney Pinsent </p>
+            <p>Wilson Wong</p>
+        </footer>
+        
+    </body>
+
+
+</html>
+
+
+
+
+<style>
+
+body {
+    font-family: 'Rubik', sans-serif;
+    width:99vw;
+    height:auto;
+    padding: 10px;
+    box-sizing:border-box;
+    border:black thick solid;
+}
+
+header {
+    width:100%;
+    border: solid 3px rgb(32, 32, 32);
+    box-sizing: border-box;
+    border-radius: 10px;
+    padding: 7px 20px 30px 20px;
+    margin-top: 0px;
+
+    /* box-shadow: 6px 6px 6px rgba(122, 121, 121, 0.363); */
+}
+#api-index {
+    position: relative;
+    width:100%;
+    margin-top:40px;
+    height:fit-content;
+    /* border: solid thin red; */
+    display: flex;
+    flex-direction: row;
+    justify-content:flex-start;
+    padding-top:   65px;
+    flex-wrap: wrap;
+    gap:10px
+}
+
+#api-index h1 {
+    position: absolute;
+    top:0;
+    left:7px;
+    height:20px;
+    width:100%;
+}
+
+.api-index-box{ 
+    position: relative;
+    border: solid 3px rgb(32, 32, 32);
+    width:250px;
+    /* width:30%; */
+    height:180px;
+    padding:10px;
+    border-radius: 10px;
+}
+
+/* @media (max-width: 780px) {
+  .api-index-box{ 
+    width:100%;
+} */
+
+
+.api-end-point{
+    position: relative;
+    /* border: red thin solid; */
+    width:100%;
+    cursor: pointer;
+}
+
+.api-hidden-box{
+    position: absolute;
+    min-width:200px;
+    width:fit-content;
+    left:100%;
+    top:0px;
+    background: #ffffff;
+    border: black 3px solid;
+    opacity: 0;
+    z-index: 3;
+    /* color: white; */
+    padding: 0px 20px 20px 20px;
+    visibility: hidden;
+    transition: opacity .5s;
+}
+.api-end-point:hover >.api-hidden-box{
+    visibility: visible;
+     opacity: 1;
+}
+
+.api-end-point:hover {
+    background: rgba(180, 178, 178, 0.418);
+}
+
+.api-hidden-box h4 {
+    margin: 15px 10px 10px 0px;
+
+}
+.arrow{
+   position:absolute;
+
+   left:-24px;
+   top: 5px;
+   transform: rotate(149deg);
+    width: 0;
+  height: 0;
+  border: 15px solid transparent;
+  border-top: 0;
+  border-bottom: 25px solid rgb(0, 0, 0);
+
+}
+
+
+#api-explanation {
+    position: relative;
+    margin-top: 40px;
+    margin-left: 0px;
+    padding-top:   80px;
+}
+
+#api-explanation h1 {
+    position: absolute;
+    top:0;
+    left:6px;
+    height:20px;
+    width:100%;
+
+}
+
+
+
+#api-explanation .tag div {
+    width:fit-content;
+    display: inline-block;
+    border: black 3px solid;
+    border-top-left-radius: 10px ;
+    padding: 10px 10px 4px 10px;
+    text-transform:uppercase;
+      cursor: pointer;
+}
+
+.explanation{
+    width:100%;
+    box-sizing:border-box;
+    border:black 3px solid;
+    border-top:black 3px solid;
+    transform:translateY(-5px);
+    background-color: white;
+    padding: 0 10px;
+    display: none;
+}
+
+
+
+.content-active{
+    display: inline-block;
+}
+
+.tag-active{
+   background-color: black;
+   color:white;
+}
+
+
+code {
+    background: rgba(245, 245, 245, 0.479);
+    padding: 2px 2px;
+    border-radius: 5px;
+}
+
+footer p {
+    text-transform: capitalize;
+
+}
+
+/* footer p::first-letter {
+    font-weight: bold;
+} */
+
+</style>
+
+
+<script>
+
+    function reset(){
+        document.querySelectorAll(".tag div").forEach((tag) => {
+            tag.classList.remove('tag-active')
+        })
+        document.querySelectorAll(".explanation").forEach((tag) => {
+            tag.classList.remove('content-active')
+        })
+    }
+
+    const tags = document.querySelectorAll(".tag div");
+    tags.forEach((tag) => {
+        tag.addEventListener('click',(e)=>{
+            reset();
+            const tag_id = tag.getAttribute( 'id' );
+            const content_id = tag_id.slice(0,tag_id.length-4);
+            document.querySelector(`#${content_id}`).classList.add("content-active")
+            document.querySelector(`#${tag_id}`).classList.add("tag-active")
+        })
+    })
+</script>

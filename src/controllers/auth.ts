@@ -9,6 +9,7 @@ import sendEmail from "../utils/email";
 import { generateToken } from '../utils/jwt';
 import { selectUserByEmail } from "../models/users";
 import bcrypt from "bcryptjs";
+import { validationResult } from "express-validator";
 
 
 class CustomerError extends Error {
@@ -22,6 +23,14 @@ class CustomerError extends Error {
 
 // POST /api/auth/signup
 export const signUp = (req: Request, res: Response, next: NextFunction) => {
+   
+    const result = validationResult(req)
+    if (!result.isEmpty()){
+        const message = result.array()[0].msg;
+        const err = new CustomerError(message,422);
+        next(err);
+    }
+
     const { username, password, email} = req.body;
     const code = Math.floor(1000 + Math.random() * 9000);
 
@@ -43,6 +52,7 @@ export const signUp = (req: Request, res: Response, next: NextFunction) => {
 
 // POST /api/auth/signUpConfirom
 export const signUpConfirom = (req: Request, res: Response, next: NextFunction) => {
+    
     const { code, pendingUserId } = req.body;
     
     selectPendingUser(pendingUserId)
@@ -105,7 +115,15 @@ export const signUpConfirom = (req: Request, res: Response, next: NextFunction) 
 
 // POST /api/auth/login
 export const login = async (req: Request, res: Response, next: NextFunction) => {
-  console.log(" in log in controller");
+ 
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        const message = result.array()[0].msg;
+        const err = new CustomerError(message, 422);
+        next(err);
+    }
+
+
   let error: CustomerError;
   const { email, password } = req.body;
   selectUserByEmail(email).then((users) => {
@@ -137,9 +155,6 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
 
   })
   .catch((err) => {
-      console.log(err)
       next(err);
   })
-//    
-//     return;
 };
