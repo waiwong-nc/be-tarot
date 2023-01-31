@@ -41,7 +41,7 @@ export const signUp = (req: Request, res: Response, next: NextFunction) => {
     sendEmail(email,subject,body)
     .then(async ()=>{
         const hashedPwd = await bcrypt.hash(password,12);
-        return createPendingUser(username, hashedPwd, email, code);
+        return createPendingUser(username, hashedPwd, email.toLowerCase(), code);
     })
     .then((pendingUserId:number) => {
         res.status(200).send({pendingUserId});
@@ -85,22 +85,19 @@ export const signUpConfirom = (req: Request, res: Response, next: NextFunction) 
         // if code matched.
         if (code === pendingUser.code) {
             createUser(
-                pendingUser.user_name,
-                pendingUser.email,
-                pendingUser.password
-            )
-            .then((user) => {
+              pendingUser.user_name.toLowerCase(),
+              pendingUser.email.toLowerCase(),
+              pendingUser.password
+            ).then((user) => {
+              const jwt = generateToken(user.email, user.user_id.toString());
+              const return_user = {
+                jwt: jwt,
+                user_id: user.user_id,
+                email: user.email,
+                user_name: user.user_name,
+              };
 
-                const jwt = generateToken(user.email, user.user_id.toString());
-                const return_user = {
-                    jwt: jwt,
-                    user_id: user.user_id,
-                    email: user.email,
-                    user_name: user.user_name,
-                };
-
-                
-                res.status(200).send({ user: return_user });
+              res.status(200).send({ user: return_user });
             });
         } else {
             // other unknow error
@@ -123,38 +120,40 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         next(err);
     }
 
+    let error: CustomerError;
+    const { email, password } = req.body;
 
-  let error: CustomerError;
-  const { email, password } = req.body;
-  selectUserByEmail(email).then((users) => {
-    // check if has such email in db
-    if (users.length === 0) {
-      error = new CustomerError("Email Not Found", 401);
-      return Promise.reject(error);
-    };
-
-    const user = users[0];
-
-    // check if password match
-    bcrypt.compare(password, user.password)
-    .then(()=> {
-        const jwt = generateToken(user.email, user.user_id.toString());
-        const return_user = {
-          jwt: jwt,
-          user_id: user.user_id,
-          email: user.email,
-          user_name : user.user_name,
-        };
-        
-        res.status(200).send({ user: return_user });
+    selectUserByEmail(email).then((users) => {
+        // check if has such email in db
+        if (users.length === 0) {
+            error = new CustomerError("Email Not Found", 401);
+            return Promise.reject(error);
+        }
+        return users[0];
     })
-    .catch(()=> {
-        error = new CustomerError("Incorrect Password", 401);
-        return Promise.reject(error);
-    });
-
-  })
-  .catch((err) => {
-      next(err);
-  })
+    .then((user:any) => {
+        // check if password match
+        return bcrypt.compare(password, user.password)
+        .then((isPasswordValid)=> {
+            if (isPasswordValid) {
+                const jwt = generateToken(user.email, user.user_id.toString());
+                return {
+                    jwt: jwt,
+                    user_id: user.user_id,
+                    email: user.email,
+                    user_name : user.user_name,
+                };
+                
+            } else {
+                error = new CustomerError("Incorrect Password", 401);
+                return Promise.reject(error);
+            }
+        })
+    })
+    .then((user) => {
+        res.status(200).send({ user });
+    })
+    .catch((err) => {
+        next(err);
+    })
 };

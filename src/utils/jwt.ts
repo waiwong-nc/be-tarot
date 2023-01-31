@@ -8,7 +8,7 @@ export const generateToken = (email:string,userId:string ) => {
       userId: userId
     },
     secret,
-    { expiresIn: "1d" }
+    { expiresIn: "180d" }
   );
 };
 

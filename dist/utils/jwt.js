@@ -10,7 +10,7 @@ const generateToken = (email, userId) => {
     return jsonwebtoken_1.default.sign({
         email: email,
         userId: userId
-    }, secret, { expiresIn: "1d" });
+    }, secret, { expiresIn: "180d" });
 };
 exports.generateToken = generateToken;
 const decodedToken = (token) => {

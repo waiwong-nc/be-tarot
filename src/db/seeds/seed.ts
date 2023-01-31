@@ -22,7 +22,7 @@ const seed = async (data: SeedDataType) => {
   const insertUsersDataPromises = usersData.map(
     ({ user_name, email, password }) => {
       return bcrypt.hash(password, 12).then((hashedPwd: string) => {
-        return [user_name, email, hashedPwd];
+        return [user_name, email.toLowerCase(), hashedPwd];
       });
     }
   );

@@ -12,7 +12,7 @@ export const selectAllUsers = () => {
 
 export const selectUserByEmail = (email: string) => {
   const sql = `SELECT * FROM users WHERE email = $1;`;
-  return db.query(sql, [email]).then(({ rows }) => {
+  return db.query(sql, [email.toLowerCase()]).then(({ rows }) => {
     return rows;
   });
 };

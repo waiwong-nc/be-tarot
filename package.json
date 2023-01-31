@@ -8,7 +8,9 @@
     "seed": "node dist/db/seeds/run-seed.js",
     "test": "jest",
     "start": "node dist/listen.js",
-    "seed-prod": "NODE_ENV=production npm run seed"
+    "start-pro": "NODE_ENV=production node dist/listen.js",
+    "seed-prod": "NODE_ENV=production npm run seed",
+    "seed-dev": "NODE_ENV=development npm run seed"
   },
   "repository": {
     "type": "git",

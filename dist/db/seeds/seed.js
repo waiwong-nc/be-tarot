@@ -30,7 +30,7 @@ const seed = (data) => __awaiter(void 0, void 0, void 0, function* () {
     );`);
     const insertUsersDataPromises = usersData.map(({ user_name, email, password }) => {
         return bcryptjs_1.default.hash(password, 12).then((hashedPwd) => {
-            return [user_name, email, hashedPwd];
+            return [user_name, email.toLowerCase(), hashedPwd];
         });
     });
     let insertUsersQueryStr = "";

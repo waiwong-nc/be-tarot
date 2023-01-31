@@ -41,7 +41,7 @@ const signUp = (req, res, next) => {
     (0, email_1.default)(email, subject, body)
         .then(() => __awaiter(void 0, void 0, void 0, function* () {
         const hashedPwd = yield bcryptjs_1.default.hash(password, 12);
-        return (0, auth_1.createPendingUser)(username, hashedPwd, email, code);
+        return (0, auth_1.createPendingUser)(username, hashedPwd, email.toLowerCase(), code);
     }))
         .then((pendingUserId) => {
         res.status(200).send({ pendingUserId });
@@ -77,8 +77,7 @@ const signUpConfirom = (req, res, next) => {
         }
         // if code matched.
         if (code === pendingUser.code) {
-            (0, auth_1.createUser)(pendingUser.user_name, pendingUser.email, pendingUser.password)
-                .then((user) => {
+            (0, auth_1.createUser)(pendingUser.user_name.toLowerCase(), pendingUser.email.toLowerCase(), pendingUser.password).then((user) => {
                 const jwt = (0, jwt_1.generateToken)(user.email, user.user_id.toString());
                 const return_user = {
                     jwt: jwt,
@@ -116,24 +115,29 @@ const login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* ()
             error = new CustomerError("Email Not Found", 401);
             return Promise.reject(error);
         }
-        ;
-        const user = users[0];
+        return users[0];
+    })
+        .then((user) => {
         // check if password match
-        bcryptjs_1.default.compare(password, user.password)
-            .then(() => {
-            const jwt = (0, jwt_1.generateToken)(user.email, user.user_id.toString());
-            const return_user = {
-                jwt: jwt,
-                user_id: user.user_id,
-                email: user.email,
-                user_name: user.user_name,
-            };
-            res.status(200).send({ user: return_user });
-        })
-            .catch(() => {
-            error = new CustomerError("Incorrect Password", 401);
-            return Promise.reject(error);
+        return bcryptjs_1.default.compare(password, user.password)
+            .then((isPasswordValid) => {
+            if (isPasswordValid) {
+                const jwt = (0, jwt_1.generateToken)(user.email, user.user_id.toString());
+                return {
+                    jwt: jwt,
+                    user_id: user.user_id,
+                    email: user.email,
+                    user_name: user.user_name,
+                };
+            }
+            else {
+                error = new CustomerError("Incorrect Password", 401);
+                return Promise.reject(error);
+            }
         });
+    })
+        .then((user) => {
+        res.status(200).send({ user });
     })
         .catch((err) => {
         next(err);

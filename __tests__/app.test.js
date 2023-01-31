@@ -149,7 +149,7 @@ describe("API", () => {
 
   describe("POST /api/entry", () => {
     
-    test.only("200: Respond with a single entry object", () => {
+    test("200: Respond with a single entry object", () => {
       const reqBody = {
         intention: "What a Good Date",
         entry_body: "hahahah hehehhe yayaya",
@@ -235,14 +235,14 @@ describe("Error Handler", () => {
 // Testing Authentication
 describe("Authentication", () => {
   // Sign Up testing
-  describe("POST// api/auth/signup", () => {
+  describe.only("POST// api/auth/signup", () => {
     const reqBody = {
       username: "hello",
       password: "1234567",
-      email: "wilson.ws.pro@gmail.com",
+      email: "WILSON.ws.pro@gmail.com",
     };
 
-    test("200: Return a pending user id after successfully signup but pending for email confirmation", () => {
+    test.only("200: Return a pending user id after successfully signup but pending for email confirmation", () => {
       return request(app)
         .post("/api/auth/signup")
         .send(reqBody)
@@ -537,6 +537,21 @@ describe("Authentication", () => {
         .then(({ body }) => {
           const { msg } = body;
           expect(msg).toBe("Email Not Found");
+        });
+    });
+
+    test("422: Return 'Incorrect Password' if no password not correct ", () => {
+      const reqBody = {
+        email: "test@hottymail.com",
+        password: "mon--key",
+      };
+      return request(app)
+        .post("/api/auth/login")
+        .send(reqBody)
+        .expect(401)
+        .then(({ body }) => {
+          const { msg } = body;
+          expect(msg).toBe("Incorrect Password");
         });
     });
 

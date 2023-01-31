@@ -15,7 +15,7 @@ const selectAllUsers = () => {
 exports.selectAllUsers = selectAllUsers;
 const selectUserByEmail = (email) => {
     const sql = `SELECT * FROM users WHERE email = $1;`;
-    return connection_1.default.query(sql, [email]).then(({ rows }) => {
+    return connection_1.default.query(sql, [email.toLowerCase()]).then(({ rows }) => {
         return rows;
     });
 };
