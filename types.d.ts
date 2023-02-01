@@ -12,6 +12,7 @@ type pendingUserDataType = {
   created_at: any;
 };
 
+
 type entriesDataType = {
   user_id: number;
   entry_body: string;

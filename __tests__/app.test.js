@@ -113,6 +113,36 @@ describe("API", () => {
         });
     });
   }); // End of "GET /api/entries/:entry_id
+
+
+    describe("PATCH /api/entries/:entry_id", () => {
+    // const isLoggin = { some process ... => set it to true }
+    // test(if authentication work ).expect(....)
+
+    test.only("200: Responds with an updated journal object", () => {
+
+      const editedEntry = {
+        user_id :1,
+        entry_body: "Edited entry",
+      }
+
+      return request(app)
+        .patch("/api/entries/1")
+        .send(editedEntry)
+        .expect(200)
+        .then(({ body }) => {
+          const { entry } = body;
+            expect(entry[0]).toEqual(
+              expect.objectContaining({
+                user_id: 1,
+                entry_body: "Edited entry",         
+    })
+            );
+         
+        });
+    });
+  }); // End of PATCH /api/users/:entry_id
+
 }); // End of "API"
 
 // Testing Error Handler

@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { tableNotFound } from "../models/error";
 
+export const status404 = (req:any, res: Response, next:NextFunction) => {
+    console.log("here status404");
+    console.log(res)
+    res.status(404).send({msg:"Not Found"});
 export const status404 = (req: any, res: Response, next: NextFunction) => {
   res.status(404).send({ msg: "Not Found" });
 };

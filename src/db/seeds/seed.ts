@@ -1,6 +1,8 @@
 import format from "pg-format";
 import db from "../connection";
 
+
+
 const seed = async (data: SeedDataType) => {
   const { usersData, entriesData, pendingUsersData } = data;
   await db.query(`DROP TABLE IF EXISTS pending_users;`);
@@ -35,7 +37,6 @@ const seed = async (data: SeedDataType) => {
         tarot_card_id VARCHAR,
         created_at TIMESTAMP DEFAULT NOW(),
         intention VARCHAR
-
     );`
   );
 
@@ -58,6 +59,7 @@ const seed = async (data: SeedDataType) => {
 
   await db.query(
     ` CREATE TABLE pending_users (
+
         user_id SERIAL PRIMARY KEY,
         user_name VARCHAR,
         email VARCHAR,
@@ -66,6 +68,7 @@ const seed = async (data: SeedDataType) => {
         created_at TIMESTAMP DEFAULT NOW()
       );`
   );
+
 
   const insertPendingUsersQueryStr = format(
     "INSERT INTO pending_users (user_name, email, password,code, created_at) VALUES %L RETURNING *;",
