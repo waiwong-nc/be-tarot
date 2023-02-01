@@ -4,14 +4,12 @@ type userDataType = {
   password: string;
 };
 
-
 type pendingUserDataType = {
   user_name: string;
   email: string;
   password: string;
   code: number;
   created_at: any;
-
 };
 
 
